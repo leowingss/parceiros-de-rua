@@ -38,10 +38,7 @@ export function Alimentos() {
                             qtdAlimento: doc.data().quantidadeAlimento,
                         })
                     })
-
                     setAlimentos(lista);
-
-
                 })
         }
 

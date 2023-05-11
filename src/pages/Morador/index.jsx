@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { FiTrash, FiPlus } from 'react-icons/fi';
 
 import { db } from '../../services/firebaseConnection';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 
 
@@ -35,6 +35,7 @@ export function Morador() {
 
                     snapshot.forEach((doc) => {
                         lista.push({
+                            id: doc.id,
                             nome: doc.data().nome,
                             idade: doc.data().idade,
                             cpfMorador: doc.data().cpfMorador,
@@ -52,13 +53,18 @@ export function Morador() {
         loadMoradores();
 
 
-    }, []);
+    }, [moradores]);
 
 
 
 
-    function handleDeleteMorador(item) {
-        console.log(item);
+    async function handleDeleteMorador(id) {
+        const docRef = doc(db, "moradores", id);
+
+        await deleteDoc(docRef)
+            .then(() => {
+                toast.success('Morador deletado com sucesso!');
+            })
     }
 
     async function handleRegisterMorador(e) {
@@ -135,15 +141,15 @@ export function Morador() {
                             </div>
                             <div className="form-group col-md-4" style={{ marginBottom: 10 }} >
                                 <label >CPF:</label>
-                                {/* <input type="text" className="form-control" id="cpf" name="cpf" required /> */}
-                                <IMaskInput
+                                <input
+                                    type="text"
+                                    className="form-control"
                                     value={cpfMorador}
-                                    type='text'
-                                    className='form-control'
-                                    mask='000.000.000-00'
+                                    id="cpf"
+                                    name="cpf"
                                     required
-                                    onChange={(e) => setCpfMorador(e.target.value)}
-                                />
+                                    maxLength={11}
+                                    onChange={(e) => setCpfMorador(e.target.value)} />
                             </div>
                         </div>
                         <button type="submit" className="btn btn-primary" style={{ marginBottom: 10 }}>
@@ -177,10 +183,10 @@ export function Morador() {
                                             <td data-label='Nome'>{item.nome} </td>
                                             <td data-label='Idade'>{item.idade}</td>
                                             <td data-label='Sexo'>{item.sexo}</td>
-                                            <td data-label='CPF'>{item.cpfMorador}</td>
+                                            <td data-label='CPF'>{item.cpfMorador.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")}</td>
                                             <td data-label='Data Cadastro'>{item.dataCadastro}</td>
                                             <td data-label='#'>
-                                                <Button variant="danger" onClick={() => handleDeleteMorador(item)}>
+                                                <Button variant="danger" onClick={() => handleDeleteMorador(item.id)}>
                                                     <FiTrash size={20} />
                                                 </Button>
                                             </td>

@@ -1,8 +1,12 @@
 import NavBar from "../../components/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FaTable } from 'react-icons/fa';
 import { FiTrash2, FiPlus } from 'react-icons/fi';
+
+import { db } from '../../services/firebaseConnection';
+import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 export function Vestuario() {
 
@@ -21,26 +25,33 @@ export function Vestuario() {
         console.log(item);
     }
 
-    function handleRegisterVestuario(e) {
+    async function handleRegisterVestuario(e) {
         e.preventDefault();
 
 
         if (nomeVestuario === '' || categoriaVestuario === '' || origemVestuario === '' || qtdVestuario === '') return;
 
-        let data = {
+        const quantidadeVestuario = Number(qtdVestuario);
+
+        await addDoc(collection(db, "vestuarios"), {
             nomeVestuario,
             categoriaVestuario,
             origemVestuario,
-            qtdVestuario
-        };
+            quantidadeVestuario
+        })
+            .then(() => {
 
-        console.log(data);
+                setNomeVestuario('');
+                setCategoriaVestuario('');
+                setOrigemVestuario('');
+                setQtdVestuario('');
 
-
-        setNomeVestuario('');
-        setCategoriaVestuario('');
-        setOrigemVestuario('');
-        setQtdVestuario('');
+                toast.success('Vestuário cadastrado com sucesso!');
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error('Erro ao cadastrar.');
+            })
 
     }
 

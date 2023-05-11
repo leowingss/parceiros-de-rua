@@ -2,15 +2,17 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
+
 const firebaseConfig = {
-    apiKey: "AIzaSyBUOh2_A35B2Cq4eE1AkXELLLqUV4ic1wo",
-    authDomain: "parceiros-de-rua.firebaseapp.com",
-    projectId: "parceiros-de-rua",
-    storageBucket: "parceiros-de-rua.appspot.com",
-    messagingSenderId: "424673868765",
-    appId: "1:424673868765:web:f813119322e17b844f1434",
-    measurementId: "G-4MTJKLJ0LG"
+    apiKey: "AIzaSyDUXL0_b0sRkTCEThiOXjip0izWjJoLah4",
+    authDomain: "parceiros-de-rua-d108d.firebaseapp.com",
+    projectId: "parceiros-de-rua-d108d",
+    storageBucket: "parceiros-de-rua-d108d.appspot.com",
+    messagingSenderId: "892768758449",
+    appId: "1:892768758449:web:9205be4923668d928b5090",
+    measurementId: "G-3VPRK9HWVJ"
 };
+
 
 const firebaseApp = initializeApp(firebaseConfig);
 
