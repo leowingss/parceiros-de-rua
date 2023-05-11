@@ -6,6 +6,10 @@ import { FaTable } from 'react-icons/fa';
 import { Button } from "react-bootstrap";
 import { useState } from "react";
 
+import { db } from '../../services/firebaseConnection';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+
 
 export function Alimentos() {
 
@@ -24,20 +28,17 @@ export function Alimentos() {
         console.log(item);
     }
 
-    function handleRegisterAlimento(e) {
+    async function handleRegisterAlimento(e) {
         e.preventDefault();
 
         if (nomeAlimento === '' || categoriaAlimento === ''
             || origemAlimento === '' || qtdAlimento === '') return;
 
-        let data = {
-            nomeAlimento,
-            categoriaAlimento,
-            origemAlimento,
-            qtdAlimento
-        };
 
-        console.log(data);
+        await addDoc(collection(db, "alimentos"), {
+            
+        })
+
 
         setNomeAlimento('');
         setCategoriaAlimento('');

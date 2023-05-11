@@ -8,15 +8,17 @@ import { format } from "date-fns";
 
 import { FiTrash, FiPlus } from 'react-icons/fi';
 
+import { db } from '../../services/firebaseConnection';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+
+
+const listRef = collection(db, 'moradores');
+
 
 export function Morador() {
 
-
-    const [usuarios, setUsuarios] = useState([
-        { nome: 'Fulano', idade: 22, sexo: 'Masculino', cpf: '22222222222', data: '07/05/2023', desaparecido: 'nao' },
-        { nome: 'Ciclano', idade: 20, sexo: 'Feminino', cpf: '3333333', data: '07/05/2023', desaparecido: 'sim' },
-        { nome: 'Beltarno', idade: 19, sexo: 'Feminio', cpf: '4444444', data: '07/05/2023', desaparecido: 'nao' },
-    ]);
+    const [moradores, setMoradores] = useState([]);
 
     const [nome, setNome] = useState('');
     const [idade, setIdade] = useState('');
@@ -24,11 +26,42 @@ export function Morador() {
     const [cpfMorador, setCpfMorador] = useState('');
     const [dataCadastro, setDataCadastro] = useState(new Date());
 
+    useEffect(() => {
+
+        async function loadMoradores() {
+            const query = await getDocs(listRef)
+                .then((snapshot) => {
+                    let lista = [];
+
+                    snapshot.forEach((doc) => {
+                        lista.push({
+                            nome: doc.data().nome,
+                            idade: doc.data().idade,
+                            cpfMorador: doc.data().cpfMorador,
+                            sexo: doc.data().sexo,
+                            dataCadastro: doc.data().formatDate
+                        })
+                    })
+
+                    setMoradores(lista);
+
+
+                })
+        }
+
+        loadMoradores();
+
+
+    }, []);
+
+
+
+
     function handleDeleteMorador(item) {
         console.log(item);
     }
 
-    function handleRegisterMorador(e) {
+    async function handleRegisterMorador(e) {
         e.preventDefault();
 
         if (nome === '' || idade === '' || sexo === '' || cpfMorador === '') return;
@@ -36,20 +69,26 @@ export function Morador() {
 
         const formatDate = format(dataCadastro, 'dd/MM/yyyy');
 
-        let data = {
+        await addDoc(collection(db, "moradores"), {
             nome,
             idade,
             sexo,
             cpfMorador,
             formatDate
-        }
+        })
+            .then(() => {
+                setNome('');
+                setIdade('');
+                setSexo('');
+                setCpfMorador('');
+                toast.success('Morador cadastrado com sucesso!')
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error('Erro ao cadastrar');
+            })
 
-        console.log(data);
 
-        setNome('');
-        setIdade('');
-        setSexo('');
-        setCpfMorador('');
 
     }
 
@@ -90,8 +129,8 @@ export function Morador() {
                                 <label >Sexo:</label>
                                 <select value={sexo} onChange={handleChangeSelect} className="form-control" required >
                                     <option disabled value="">Selecione</option>
-                                    <option value="M">Masculino</option>
-                                    <option value="F">Feminino</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Feminino">Feminino</option>
                                 </select>
                             </div>
                             <div className="form-group col-md-4" style={{ marginBottom: 10 }} >
@@ -128,20 +167,18 @@ export function Morador() {
                                     <th>Sexo</th>
                                     <th>CPF</th>
                                     <th>Data Cadastro</th>
-                                    {/* <th>Desaparecido</th> */}
                                     <th>Deletar</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {usuarios.map((item, index) => {
+                                {moradores.map((item, index) => {
                                     return (
                                         <tr key={index}>
                                             <td data-label='Nome'>{item.nome} </td>
                                             <td data-label='Idade'>{item.idade}</td>
                                             <td data-label='Sexo'>{item.sexo}</td>
-                                            <td data-label='CPF'>{item.cpf}</td>
-                                            <td data-label='Data Cadastro'>{item.data}</td>
-                                            {/* <td data-label='Desaparecido'>{item.desaparecido}</td> */}
+                                            <td data-label='CPF'>{item.cpfMorador}</td>
+                                            <td data-label='Data Cadastro'>{item.dataCadastro}</td>
                                             <td data-label='#'>
                                                 <Button variant="danger" onClick={() => handleDeleteMorador(item)}>
                                                     <FiTrash size={20} />
