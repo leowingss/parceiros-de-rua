@@ -2,22 +2,55 @@ import NavBar from '../../components/Navbar';
 
 import { Chart } from "react-google-charts";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { FaChartPie } from 'react-icons/fa';
+
+
+import { db } from '../../services/firebaseConnection';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 
 
 export const options = {
     title: "Recursos em 2023",
 };
 
+const listRef = collection(db, 'alimentos');
+
 export function Home() {
+
+    const [recursos, setRecursos] = useState([]);
+
+    useEffect(() => {
+
+        async function loadRecursos() {
+            const query = await getDocs(listRef)
+                .then((snapshot) => {
+                    let lista = [];
+
+                    snapshot.forEach((doc) => {
+                        lista.push(doc.data().quantidadeAlimento)
+                    })
+
+                    const somaAlimentos = lista.reduce((acc, value) => {
+                        return acc + value;
+                    }, 0)
+
+                    setRecursos(somaAlimentos);
+                })
+
+        }
+
+        loadRecursos();
+    }, [])
+
+
 
     const [alimentos, setAlimentos] = useState(20);
 
     const data = [
         ["Task", "Hours per Day"],
-        ["Alimentos", alimentos],
+        ["Alimentos", recursos],
         ["Vestuários", 5],
         ["Higiene", 12],
     ];

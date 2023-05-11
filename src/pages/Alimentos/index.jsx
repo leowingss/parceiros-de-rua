@@ -1,31 +1,64 @@
+import { useState, useEffect } from "react";
 import NavBar from "../../components/Navbar";
 import { FiPlus, FiTrash2 } from 'react-icons/fi';
 
 import { FaTable } from 'react-icons/fa';
 
 import { Button } from "react-bootstrap";
-import { useState } from "react";
 
 import { db } from '../../services/firebaseConnection';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+
+const listRef = collection(db, 'alimentos');
 
 
 export function Alimentos() {
 
-    const [alimentos, setAlimentos] = useState([
-        { nome: 'Arroz', categoria: 'Grão', origem: 'Doação', qtd: '1' },
-        { nome: 'Feijao', categoria: 'Grão', origem: 'Compra comunitária', qtd: '2' },
-        { nome: 'Carne', categoria: 'carne', origem: 'Doação', qtd: '1' },
-    ]);
+    const [alimentos, setAlimentos] = useState([]);
 
     const [nomeAlimento, setNomeAlimento] = useState('');
     const [categoriaAlimento, setCategoriaAlimento] = useState('');
     const [origemAlimento, setOrigemAlimento] = useState('');
     const [qtdAlimento, setQtdAlimento] = useState('');
 
-    function handleDeleteAlimento(item) {
-        console.log(item);
+    useEffect(() => {
+
+        async function loadAlimentos() {
+            const query = await getDocs(listRef)
+                .then((snapshot) => {
+                    let lista = [];
+
+                    snapshot.forEach((doc) => {
+                        lista.push({
+                            id: doc.id,
+                            nomeAlimento: doc.data().nomeAlimento,
+                            categoriaAlimento: doc.data().categoriaAlimento,
+                            origemAlimento: doc.data().origemAlimento,
+                            qtdAlimento: doc.data().quantidadeAlimento,
+                        })
+                    })
+
+                    setAlimentos(lista);
+
+
+                })
+        }
+
+        loadAlimentos();
+
+
+    }, [alimentos]);
+
+
+    async function handleDeleteAlimento(id) {
+
+        const docRef = doc(db, "alimentos", id);
+        await deleteDoc(docRef)
+            .then(() => {
+                toast.success('Alimento deletado com sucesso!');
+            })
+
     }
 
     async function handleRegisterAlimento(e) {
@@ -34,16 +67,29 @@ export function Alimentos() {
         if (nomeAlimento === '' || categoriaAlimento === ''
             || origemAlimento === '' || qtdAlimento === '') return;
 
+        const quantidadeAlimento = Number(qtdAlimento);
+
 
         await addDoc(collection(db, "alimentos"), {
-            
+            nomeAlimento,
+            categoriaAlimento,
+            origemAlimento,
+            quantidadeAlimento
         })
+            .then(() => {
+                setNomeAlimento('');
+                setCategoriaAlimento('');
+                setOrigemAlimento('');
+                setQtdAlimento('');
+                toast.success('Alimento cadastrado com sucesso!')
+            })
+            .catch((error) => {
+                console.log(error);
+                toast.error('Erro ao cadastrar.');
+            })
 
 
-        setNomeAlimento('');
-        setCategoriaAlimento('');
-        setOrigemAlimento('');
-        setQtdAlimento('');
+
     }
 
 
@@ -140,12 +186,12 @@ export function Alimentos() {
                                 {alimentos.map((item, index) => {
                                     return (
                                         <tr key={index}>
-                                            <td data-label='Nome do Alimento'>{item.nome} </td>
-                                            <td data-label='Categoria do Alimento'>{item.categoria}</td>
-                                            <td data-label='Origem'>{item.origem}</td>
-                                            <td data-label='Quantidade'>{item.qtd}</td>
+                                            <td data-label='Nome do Alimento'>{item.nomeAlimento} </td>
+                                            <td data-label='Categoria do Alimento'>{item.categoriaAlimento}</td>
+                                            <td data-label='Origem'>{item.origemAlimento}</td>
+                                            <td data-label='Quantidade'>{item.qtdAlimento}</td>
                                             <td data-label='#'>
-                                                <Button variant="danger" onClick={() => handleDeleteAlimento(item)}>
+                                                <Button variant="danger" onClick={() => handleDeleteAlimento(item.id)}>
                                                     <FiTrash2 size={20} />
                                                 </Button>
                                             </td>
