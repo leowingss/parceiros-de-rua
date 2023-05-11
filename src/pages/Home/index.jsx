@@ -78,7 +78,7 @@ export function Home() {
                                             <th>Sexo</th>
                                             <th>CPF</th>
                                             <th>Data Cadastro</th>
-                                            <th>Desaparecido</th>
+                                            {/* <th>Desaparecido</th> */}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -90,7 +90,7 @@ export function Home() {
                                                     <td data-label='Sexo'>{item.sexo}</td>
                                                     <td data-label='CPF'>{item.cpf}</td>
                                                     <td data-label='Data Cadastro'>{item.data}</td>
-                                                    <td data-label='Desaparecido'>{item.desaparecido}</td>
+                                                    {/* <td data-label='Desaparecido'>{item.desaparecido}</td> */}
                                                 </tr>
                                             )
                                         })}

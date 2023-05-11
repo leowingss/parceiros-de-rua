@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import NavBar from "../../components/Navbar";
 import Button from 'react-bootstrap/Button';
@@ -128,7 +128,7 @@ export function Morador() {
                                     <th>Sexo</th>
                                     <th>CPF</th>
                                     <th>Data Cadastro</th>
-                                    <th>Desaparecido</th>
+                                    {/* <th>Desaparecido</th> */}
                                     <th>Deletar</th>
                                 </tr>
                             </thead>
@@ -141,7 +141,7 @@ export function Morador() {
                                             <td data-label='Sexo'>{item.sexo}</td>
                                             <td data-label='CPF'>{item.cpf}</td>
                                             <td data-label='Data Cadastro'>{item.data}</td>
-                                            <td data-label='Desaparecido'>{item.desaparecido}</td>
+                                            {/* <td data-label='Desaparecido'>{item.desaparecido}</td> */}
                                             <td data-label='#'>
                                                 <Button variant="danger" onClick={() => handleDeleteMorador(item)}>
                                                     <FiTrash size={20} />
