@@ -53,7 +53,7 @@ export function Alimentos() {
 
                 <h1>Alimentos</h1>
 
-                <div className="card mb-4">
+                <div className="card mb-4" style={{ marginRight: 20 }}>
                     <div className="card-header">
                         <FiPlus size={18} style={{ marginRight: 8 }} />
 
