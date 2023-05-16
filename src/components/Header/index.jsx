@@ -7,7 +7,7 @@ function Header() {
 
     return (
         <div className='sidebar' >
-            <div>
+            <div style={{marginTop: '30px'}}> 
                 <img
                     src='../../src/assets/icon_parceiros.svg'
                     alt="Logo"

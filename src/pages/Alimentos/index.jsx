@@ -7,7 +7,7 @@ import { FaTable } from 'react-icons/fa';
 import { Button } from "react-bootstrap";
 
 import { db } from '../../services/firebaseConnection';
-import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, deleteDoc, doc, query, limit } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 
 const listRef = collection(db, 'alimentos');
@@ -25,7 +25,8 @@ export function Alimentos() {
     useEffect(() => {
 
         async function loadAlimentos() {
-            const query = await getDocs(listRef)
+            const q = query(listRef, limit(5))
+            const querySnapshot = await getDocs(q)
                 .then((snapshot) => {
                     let lista = [];
 
@@ -38,14 +39,17 @@ export function Alimentos() {
                             qtdAlimento: doc.data().quantidadeAlimento,
                         })
                     })
+                    
                     setAlimentos(lista);
                 })
         }
 
         loadAlimentos();
 
+        return () => { }
 
-    }, [alimentos]);
+
+    }, []);
 
 
     async function handleDeleteAlimento(id) {

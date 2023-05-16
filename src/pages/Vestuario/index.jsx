@@ -1,28 +1,65 @@
 import NavBar from "../../components/Navbar";
 import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { FaTable } from 'react-icons/fa';
+import { FaLeaf, FaTable } from 'react-icons/fa';
 import { FiTrash2, FiPlus } from 'react-icons/fi';
 
 import { db } from '../../services/firebaseConnection';
-import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, deleteDoc, doc, orderBy, limit, query } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+
+const listRef = collection(db, 'vestuarios');
 
 export function Vestuario() {
 
-    const [vestuarios, setVestuarios] = useState([
-        { nome: 'Camiseta Polo', categoria: 'Camiseta', origem: 'Doação', qtd: '1' },
-        { nome: 'Calça Jeans', categoria: 'Calça', origem: 'Compra comunitária', qtd: '2' },
-        { nome: 'Jaqueta moletom', categoria: 'Jaqueta', origem: 'Doação', qtd: '1' },
-    ]);
+
+    const [vestuarios, setVestuarios] = useState([]);
 
     const [nomeVestuario, setNomeVestuario] = useState('');
     const [categoriaVestuario, setCategoriaVestuario] = useState('');
     const [origemVestuario, setOrigemVestuario] = useState('');
     const [qtdVestuario, setQtdVestuario] = useState('');
 
-    function handleDeleteVestuario(item) {
-        console.log(item);
+    useEffect(() => {
+
+        async function loadVestuarios() {
+
+            const q = query(listRef, limit(5))
+            const querySnapshot = await getDocs(q)
+
+                .then((snapshot) => {
+                    let lista = [];
+
+                    snapshot.forEach((doc) => {
+                        lista.push({
+                            id: doc.id,
+                            nomeVestuario: doc.data().nomeVestuario,
+                            categoriaVestuario: doc.data().categoriaVestuario,
+                            origemVestuario: doc.data().origemVestuario,
+                            quantidadeVestuario: doc.data().quantidadeVestuario
+                        })
+                    })
+
+                    console.log(lista);
+                    setVestuarios(lista);
+                })
+
+            return () => { }
+
+        }
+
+        loadVestuarios();
+
+    }, [])
+
+    async function handleDeleteVestuario(id) {
+        const ref = doc(db, 'vestuarios', id);
+        await deleteDoc(ref)
+            .then(() => {
+                const removeItem = vestuarios.filter(item => item.id !== id);
+                setVestuarios(removeItem);
+                toast.success('Vestuario deletado com sucesso!');
+            })
     }
 
     async function handleRegisterVestuario(e) {
@@ -146,16 +183,17 @@ export function Vestuario() {
                                     <th>Deletar</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {vestuarios.map((item, index) => {
                                     return (
                                         <tr key={index}>
-                                            <td data-label='Nome do Vestuário'>{item.nome} </td>
-                                            <td data-label='Categoria do Vestuário'>{item.categoria}</td>
-                                            <td data-label='Origem'>{item.origem}</td>
-                                            <td data-label='Quantidade'>{item.qtd}</td>
+                                            <td data-label='Nome do Vestuário'>{item.nomeVestuario} </td>
+                                            <td data-label='Categoria do Vestuário'>{item.categoriaVestuario}</td>
+                                            <td data-label='Origem'>{item.origemVestuario}</td>
+                                            <td data-label='Quantidade'>{item.quantidadeVestuario}</td>
                                             <td data-label='#'>
-                                                <Button variant="danger" onClick={() => handleDeleteVestuario(item)}>
+                                                <Button variant="danger" onClick={() => handleDeleteVestuario(item.id)}>
                                                     <FiTrash2 size={20} />
                                                 </Button>
                                             </td>

@@ -52,8 +52,9 @@ export function Morador() {
 
         loadMoradores();
 
+        return () => { }
 
-    }, [moradores]);
+    }, []);
 
 
 

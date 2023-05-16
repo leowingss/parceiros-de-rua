@@ -8,7 +8,7 @@ import { FaChartPie } from 'react-icons/fa';
 
 
 import { db } from '../../services/firebaseConnection';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, getDoc, getDocs } from 'firebase/firestore';
 
 
 export const options = {
@@ -18,8 +18,9 @@ export const options = {
 
 export function Home() {
 
-    const [recursos, setRecursos] = useState([]);
-
+    const [alimentos, setAlimentos] = useState([]);
+    const [vestuarios, setVestuarios] = useState([]);
+    const [higiene, setHigiene] = useState([]);
     const [moradores, setMoradores] = useState([]);
 
 
@@ -27,9 +28,11 @@ export function Home() {
 
         async function loadRecursos() {
 
-            const listRef = collection(db, 'alimentos');
+            const listRefAlimentos = collection(db, 'alimentos');
+            const listRefVestuarios = collection(db, 'vestuarios');
+            const listRefHigiene = collection(db, 'higienes');
 
-            const query = await getDocs(listRef)
+            const query = await getDocs(listRefAlimentos)
                 .then((snapshot) => {
                     let lista = [];
 
@@ -41,7 +44,37 @@ export function Home() {
                         return acc + value;
                     }, 0)
 
-                    setRecursos(somaAlimentos);
+                    setAlimentos(somaAlimentos);
+                })
+
+            await getDocs(listRefVestuarios)
+                .then((snapshot) => {
+                    let lista = [];
+
+                    snapshot.forEach((doc) => {
+                        lista.push(doc.data().quantidadeVestuario)
+                    })
+
+                    const somaVestuario = lista.reduce((acc, value) => {
+                        return acc + value;
+                    });
+
+                    setVestuarios(somaVestuario);
+                })
+
+                await getDocs(listRefHigiene)
+                .then((snapshot)=> {
+                    let lista = [];
+
+                    snapshot.forEach((doc)=>{
+                        lista.push(doc.data().quantidadeHigiene)
+                    })
+
+                    const somaHigiene = lista.reduce((acc, value)=>{
+                        return acc + value;
+                    });
+
+                    setHigiene(somaHigiene);
                 })
 
         }
@@ -83,9 +116,9 @@ export function Home() {
 
     const data = [
         ["Task", "Hours per Day"],
-        ["Alimentos", recursos],
-        ["Vestuários", 5],
-        ["Higiene", 12],
+        ["Alimentos", alimentos],
+        ["Vestuários", vestuarios],
+        ["Higiene", higiene],
     ];
 
     return (

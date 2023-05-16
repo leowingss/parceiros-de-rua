@@ -16,6 +16,8 @@ import { Link } from 'react-router-dom';
 function NavBar() {
     return (
         <>
+            <Header />
+
             <Navbar bg="dark" expand="lg" variant='dark'>
                 <Container fluid>
                     <Navbar.Brand>Parceiros De Rua</Navbar.Brand>
@@ -77,7 +79,6 @@ function NavBar() {
                     </Navbar.Collapse>
                 </Container>
             </Navbar >
-            <Header />
         </>
     );
 }

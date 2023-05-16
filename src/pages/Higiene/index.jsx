@@ -1,43 +1,83 @@
 import NavBar from "../../components/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FaTable } from 'react-icons/fa';
 import { FiTrash2, FiPlus } from 'react-icons/fi';
 
+import { addDoc, collection, getDocs, deleteDoc, doc, query, limit } from 'firebase/firestore';
+import { db } from '../../services/firebaseConnection';
+
+import { toast } from 'react-toastify';
+
+
+const listRef = collection(db, 'higienes');
+
 export function Higiene() {
 
-    const [higiene, setHigiene] = useState([
-        { nome: 'Desinfetante', categoria: 'Desinfetante', origem: 'Doação', qtd: '1' },
-        { nome: 'Água Sanitária', categoria: 'Desinfetante', origem: 'Compra comunitária', qtd: '2' },
-    ]);
+    const [higiene, setHigiene] = useState([]);
 
     const [nomeHigiene, setNomeHigiene] = useState('');
     const [categoriaHigiene, setCategoriaHigiene] = useState('');
     const [origemHigiene, setOrigemHigiene] = useState('');
     const [qtdHigiene, setQtdHigiene] = useState('');
 
-    function handleDeleteHigine(item) {
-        console.log(item);
+    useEffect(() => {
+
+        async function loadHigienes() {
+            const q = query(listRef, limit(5))
+            const querySnapshot = await getDocs(q)
+                .then((snapshot) => {
+                    let lista = [];
+
+                    snapshot.forEach((doc) => {
+                        lista.push({
+                            id: doc.id,
+                            nomeHigiene: doc.data().nomeHigiene,
+                            categoriaHigiene: doc.data().categoriaHigiene,
+                            origemHigiene: doc.data().origemHigiene,
+                            qtdHigiene: doc.data().quantidadeHigiene
+                        })
+                    })
+
+                    setHigiene(lista);
+                })
+        }
+
+        loadHigienes();
+
+    }, [])
+
+    async function handleDeleteHigine(id) {
+        const docRef = doc(db, 'higienes', id);
+        await deleteDoc(docRef)
+            .then(() => {
+                toast.success('Higiene deletada com sucesso!');
+            })
     }
 
-    function handleRegisterHigiene(e) {
+    async function handleRegisterHigiene(e) {
         e.preventDefault();
 
         if (nomeHigiene === '' || categoriaHigiene === '' || origemHigiene === '' || qtdHigiene === '') return;
 
-        let data = {
+        const quantidadeHigiene = Number(qtdHigiene);
+
+        await addDoc(collection(db, "higienes"), {
             nomeHigiene,
             categoriaHigiene,
             origemHigiene,
-            qtdHigiene
-        };
+            quantidadeHigiene
+        })
+            .then(() => {
 
-        console.log(data);
+                setNomeHigiene('');
+                setCategoriaHigiene('');
+                setOrigemHigiene('');
+                setQtdHigiene('');
 
-        setNomeHigiene('');
-        setCategoriaHigiene('');
-        setOrigemHigiene('');
-        setQtdHigiene('');
+                toast.success('Higiene cadastrada com sucesso!');
+            })
+
     }
 
 
@@ -134,12 +174,12 @@ export function Higiene() {
                                 {higiene.map((item, index) => {
                                     return (
                                         <tr key={index}>
-                                            <td data-label='Nome do Higiene'>{item.nome} </td>
-                                            <td data-label='Categoria do Higiene'>{item.categoria}</td>
-                                            <td data-label='Origem'>{item.origem}</td>
-                                            <td data-label='Quantidade'>{item.qtd}</td>
+                                            <td data-label='Nome do Higiene'>{item.nomeHigiene} </td>
+                                            <td data-label='Categoria do Higiene'>{item.categoriaHigiene}</td>
+                                            <td data-label='Origem'>{item.origemHigiene}</td>
+                                            <td data-label='Quantidade'>{item.qtdHigiene}</td>
                                             <td data-label='#'>
-                                                <Button variant="danger" onClick={() => handleDeleteHigine(item)}>
+                                                <Button variant="danger" onClick={() => handleDeleteHigine(item.id)}>
                                                     <FiTrash2 size={20} />
                                                 </Button>
                                             </td>
