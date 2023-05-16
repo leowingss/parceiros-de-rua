@@ -1,21 +1,53 @@
 import NavBar from "../../components/Navbar";
 import Button from 'react-bootstrap/Button';
 
+import { db } from '../../services/firebaseConnection';
+
 import { FiTrash } from 'react-icons/fi';
 
+import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { toast } from 'react-toastify';
+
+const docRef = collection(db, 'usuarios');
 
 export function Usuarios() {
 
-    const [usuarios, setUsuarios] = useState([
-        { nome: 'Fulano', email: 'fulano@gmail.com', gestor: 2, data: '07/05/2023', acao: 'vestuario' },
-        { nome: 'Ciclano', email: 'ciclano@gmail.com', gestor: 3, data: '07/05/2023', acao: 'alimentos' },
-        { nome: 'Beltarno', email: 'beltrano@gmail.com', gestor: 4, data: '07/05/2023', acao: 'vestuario' },
-    ]);
+    useEffect(() => {
 
-    function handleDeleteUser(item) {
-        console.log(item);
+        async function loadUsuarios() {
+            const query = await getDocs(docRef)
+                .then((snapshot) => {
+                    let lista = [];
+
+                    snapshot.forEach((doc) => {
+                        lista.push({
+                            id: doc.id,
+                            nome: doc.data().nome,
+                            email: doc.data().email,
+                            data: doc.data().data
+                        })
+                    })
+                    setUsuarios(lista);
+                })
+        }
+
+        loadUsuarios();
+
+        return () => { }
+    }, [])
+
+    const [usuarios, setUsuarios] = useState([]);
+
+    async function handleDeleteUser(id) {
+        const docRef = doc(db, "usuarios", id);
+        await deleteDoc(docRef)
+            .then(() => {
+                toast.success('Usuário deletado com sucesso!');
+            })
+
     }
 
     return (
@@ -40,9 +72,9 @@ export function Usuarios() {
                                     <tr>
                                         <th>Nome</th>
                                         <th>Email</th>
-                                        <th>Gestor</th>
+                                        {/* <th>Gestor</th> */}
                                         <th>Data Cadastro</th>
-                                        <th>Ação</th>
+                                        {/* <th>Ação</th> */}
                                         <th>Deletar</th>
                                     </tr>
                                 </thead>
@@ -52,11 +84,11 @@ export function Usuarios() {
                                             <tr key={index}>
                                                 <td data-label='Nome'>{item.nome} </td>
                                                 <td data-label='Email'>{item.email}</td>
-                                                <td data-label='Gestor'>{item.gestor}</td>
+                                                {/* <td data-label='Gestor'>{item.gestor}</td> */}
                                                 <td data-label='Data Cadastro'>{item.data}</td>
-                                                <td data-label='Ação'>{item.acao}</td>
+                                                {/* <td data-label='Ação'>{item.acao}</td> */}
                                                 <td data-label='#'>
-                                                    <Button variant="danger" onClick={() => handleDeleteUser(item)}>
+                                                    <Button variant="danger" onClick={() => handleDeleteUser(item.id)}>
                                                         <FiTrash size={20} />
                                                     </Button>
                                                 </td>

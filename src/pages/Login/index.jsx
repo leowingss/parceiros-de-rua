@@ -1,7 +1,12 @@
 import NavBar from '../../components/Navbar';
 import Button from 'react-bootstrap/Button';
 
+import { auth, db } from '../../services/firebaseConnection';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { setDoc, doc } from 'firebase/firestore';
+
 import { toast } from 'react-toastify';
+import { format } from "date-fns";
 
 import { useState } from 'react';
 
@@ -10,29 +15,39 @@ export function Login() {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [confirmaSenha, setConfirmaSenha] = useState('');
+    const [dataCadastro, setDataCadastro] = useState(new Date());
 
-    function handleRegisterUser(e) {
+    async function handleRegisterUser(e) {
         e.preventDefault();
 
-        if (nome === '' || email === '' || senha === '' || confirmaSenha === '') return;
-
-        let data = {
-            nome,
-            email,
-            senha,
-            confirmaSenha
+        if (nome === '' || email === '' || senha === '') {
+            toast.warn('Preencha todos os campos!');
+            return;
         };
 
-        console.log(data);
+        await createUserWithEmailAndPassword(auth, email, senha)
+            .then(async (value) => {
+                let uid = value.user.uid;
 
-        setNome('')
-        setEmail('')
-        setSenha('');
-        setConfirmaSenha('');
+                const formatDate = format(dataCadastro, 'dd/MM/yyyy');
 
-        toast.success('Cadastro realizado com sucesso!');
+                await setDoc(doc(db, "usuarios", uid), {
+                    nome: nome,
+                    email: value.user.email,
+                    data: formatDate
+                })
+                    .then(() => {
+                        setNome('')
+                        setEmail('')
+                        setSenha('');
 
+                        toast.success('Cadastro realizado com sucesso!');
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        toast.error('Erro ao cadastrar');
+                    })
+            })
 
     }
 
@@ -72,7 +87,7 @@ export function Login() {
                                             <label htmlFor="inputEmail">Endereço de email</label>
                                         </div>
                                         <div className="row mb-3">
-                                            <div className="col-md-6">
+                                            <div className="col-md-12">
                                                 <div className="form-floating mb-3 mb-md-0">
                                                     <input
                                                         className="form-control"
@@ -82,18 +97,6 @@ export function Login() {
                                                         onChange={(e) => setSenha(e.target.value)}
                                                     />
                                                     <label htmlFor="inputPassword">Senha</label>
-                                                </div>
-                                            </div>
-                                            <div className="col-md-6">
-                                                <div className="form-floating mb-3 mb-md-0">
-                                                    <input
-                                                        className="form-control" id="inputPasswordConfirm"
-                                                        type="password" placeholder="Confirm password"
-                                                        value={confirmaSenha}
-                                                        onChange={(e) => setConfirmaSenha(e.target.value)}
-
-                                                    />
-                                                    <label htmlFor="inputPasswordConfirm">Confirma sua senha</label>
                                                 </div>
                                             </div>
                                         </div>
