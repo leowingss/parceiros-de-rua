@@ -23,9 +23,10 @@ export function Home() {
     ];
 
     const [usuarios, setUsuarios] = useState([
-        { nome: 'Fulano', idade: 22, sexo: 'Masculino', cpf: '22222222222', data: '07/05/2023', desaparecido: 'nao' },
-        { nome: 'Ciclano', idade: 20, sexo: 'Feminino', cpf: '3333333', data: '07/05/2023', desaparecido: 'sim' },
-        { nome: 'Beltarno', idade: 19, sexo: 'Feminio', cpf: '4444444', data: '07/05/2023', desaparecido: 'nao' },
+        { nome: 'Vinicius Goncalves Barros', idade: 42, sexo: 'Masculino', cpf: '420.391.538-22', data: '07/05/2023' },
+        { nome: 'Erick Ribeiro Pereira', idade: 60, sexo: 'Masculino', cpf: '311.431.901-12', data: '08/05/2023' },
+        { nome: 'Emily Pereira Carvalho', idade: 29, sexo: 'Feminino', cpf: '874.235.983-90', data: '09/05/2023' },
+        { nome: 'Luiza Araujo Azevedo', idade: 39, sexo: 'Feminino', cpf: '231.334.982-14', data: '09/05/2023' },
     ]);
 
 

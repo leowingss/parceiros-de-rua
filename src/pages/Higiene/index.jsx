@@ -7,7 +7,7 @@ import { FiTrash2, FiPlus } from 'react-icons/fi';
 export function Higiene() {
 
     const [higiene, setHigiene] = useState([
-        { nome: 'Desinfetante', categoria: 'Desinfetante', origem: 'Doação', qtd: '1' },
+        { nome: 'Papel higiênico', categoria: 'Papéis', origem: 'Doação', qtd: '1' },
         { nome: 'Água Sanitária', categoria: 'Desinfetante', origem: 'Compra comunitária', qtd: '2' },
     ]);
 

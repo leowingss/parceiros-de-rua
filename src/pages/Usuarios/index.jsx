@@ -9,9 +9,11 @@ import { useState } from "react";
 export function Usuarios() {
 
     const [usuarios, setUsuarios] = useState([
-        { nome: 'Fulano', email: 'fulano@gmail.com', gestor: 2, data: '07/05/2023', acao: 'vestuario' },
-        { nome: 'Ciclano', email: 'ciclano@gmail.com', gestor: 3, data: '07/05/2023', acao: 'alimentos' },
-        { nome: 'Beltarno', email: 'beltrano@gmail.com', gestor: 4, data: '07/05/2023', acao: 'vestuario' },
+        { nome: 'Leonardo', email: 'leonardo@gmail.com', data: '07/05/2023', acao: 'Vestuário' },
+        { nome: 'Felipe Chagas', email: 'felipechagas@gmail.com', data: '07/05/2023', acao: 'Alimentos' },
+        { nome: 'Felipe', email: 'felipe@gmail.com', data: '07/05/2023', acao: 'Vestuário' },
+        { nome: 'João', email: 'joao@gmail.com', data: '07/05/2023', acao: 'Vestuário' },
+        { nome: 'Guilherme', email: 'guilherme@gmail.com', data: '07/05/2023', acao: 'Alimentos' },
     ]);
 
     function handleDeleteUser(item) {
@@ -40,7 +42,7 @@ export function Usuarios() {
                                     <tr>
                                         <th>Nome</th>
                                         <th>Email</th>
-                                        <th>Gestor</th>
+                                        {/* <th>Gestor</th> */}
                                         <th>Data Cadastro</th>
                                         <th>Ação</th>
                                         <th>Deletar</th>
@@ -52,7 +54,7 @@ export function Usuarios() {
                                             <tr key={index}>
                                                 <td data-label='Nome'>{item.nome} </td>
                                                 <td data-label='Email'>{item.email}</td>
-                                                <td data-label='Gestor'>{item.gestor}</td>
+                                                {/* <td data-label='Gestor'>{item.gestor}</td> */}
                                                 <td data-label='Data Cadastro'>{item.data}</td>
                                                 <td data-label='Ação'>{item.acao}</td>
                                                 <td data-label='#'>

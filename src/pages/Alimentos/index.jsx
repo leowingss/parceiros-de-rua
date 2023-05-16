@@ -11,8 +11,8 @@ export function Alimentos() {
 
     const [alimentos, setAlimentos] = useState([
         { nome: 'Arroz', categoria: 'Grão', origem: 'Doação', qtd: '1' },
-        { nome: 'Feijao', categoria: 'Grão', origem: 'Compra comunitária', qtd: '2' },
-        { nome: 'Carne', categoria: 'carne', origem: 'Doação', qtd: '1' },
+        { nome: 'Feijão', categoria: 'Grão', origem: 'Compra comunitária', qtd: '2' },
+        { nome: 'Carne', categoria: 'Carne', origem: 'Doação', qtd: '1' },
     ]);
 
     const [nomeAlimento, setNomeAlimento] = useState('');
