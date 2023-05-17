@@ -39,7 +39,7 @@ export function Alimentos() {
                             qtdAlimento: doc.data().quantidadeAlimento,
                         })
                     })
-                    
+
                     setAlimentos(lista);
                 })
         }
@@ -57,6 +57,8 @@ export function Alimentos() {
         const docRef = doc(db, "alimentos", id);
         await deleteDoc(docRef)
             .then(() => {
+                const removeItem = alimentos.filter(item => item.id !== id);
+                setAlimentos(removeItem);
                 toast.success('Alimento deletado com sucesso!');
             })
 
@@ -132,6 +134,8 @@ export function Alimentos() {
                                         <option value="">Selecione</option>
                                         <option value="Grão">Grão</option>
                                         <option value="Carne">Carne</option>
+                                        <option value="Suco">Suco</option>
+                                        <option value="Água">Água</option>
                                     </select>
                                 </div>
                                 <div className="form-group col-md-4">

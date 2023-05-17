@@ -5,8 +5,13 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Image } from 'react-bootstrap';
-
+import Dropdown from 'react-bootstrap/Dropdown';
 import Header from '../Header';
+
+import { useContext } from 'react';
+import { AuthContext } from '../../contexts/auth';
+
+import { FiUser } from 'react-icons/fi';
 
 import './index.css';
 
@@ -14,6 +19,11 @@ import { Link } from 'react-router-dom';
 
 
 function NavBar() {
+
+    const { user, logout } = useContext(AuthContext);
+
+    console.log(user);
+
     return (
         <>
             <Header />
@@ -36,7 +46,7 @@ function NavBar() {
                                 <Link to='/usuarios'>
                                     <NavDropdown.Item href="#action3">Todos usuários</NavDropdown.Item>
                                 </Link>
-                                <Link to='/login'>
+                                <Link to='/cadastro'>
                                     <NavDropdown.Item href="#action4">
                                         Cadastrar novo usuário
                                     </NavDropdown.Item>
@@ -66,16 +76,37 @@ function NavBar() {
                                 </Link>
                             </NavDropdown>
 
+
+
                         </Nav>
-                        <Form className="d-flex">
-                            <Form.Control
-                                type="search"
-                                placeholder="Pesquisar"
-                                className="me-2"
-                                aria-label="Search"
-                            />
-                            <Button variant="outline-success">Pesquisar</Button>
-                        </Form>
+
+                        {!user && (
+                            <>
+                                <Link to='/login'> 
+                                    <Button variant='secondary'>Fazer Login</Button>
+                                </Link>
+                            </>
+                        )}
+
+                        {user && user.nome && (
+                            <Navbar.Brand>Bem vindo(a) {user?.nome}</Navbar.Brand>
+                        )}
+
+
+                        {user && (
+
+                            <Dropdown style={{ marginRight: 40 }}>
+                                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
+                                    <FiUser size={18} />
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu >
+                                    <Dropdown.Item href="#/action-3" onClick={logout}>Sair</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        )}
+
+
                     </Navbar.Collapse>
                 </Container>
             </Navbar >

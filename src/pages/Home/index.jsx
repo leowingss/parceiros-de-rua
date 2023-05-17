@@ -57,22 +57,22 @@ export function Home() {
 
                     const somaVestuario = lista.reduce((acc, value) => {
                         return acc + value;
-                    });
+                    }, 0);
 
                     setVestuarios(somaVestuario);
                 })
 
-                await getDocs(listRefHigiene)
-                .then((snapshot)=> {
+            await getDocs(listRefHigiene)
+                .then((snapshot) => {
                     let lista = [];
 
-                    snapshot.forEach((doc)=>{
+                    snapshot.forEach((doc) => {
                         lista.push(doc.data().quantidadeHigiene)
                     })
 
-                    const somaHigiene = lista.reduce((acc, value)=>{
+                    const somaHigiene = lista.reduce((acc, value) => {
                         return acc + value;
-                    });
+                    }, 0);
 
                     setHigiene(somaHigiene);
                 })

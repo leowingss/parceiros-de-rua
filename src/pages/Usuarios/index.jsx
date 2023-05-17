@@ -1,19 +1,22 @@
+import { useState, useEffect, useContext } from "react";
 import NavBar from "../../components/Navbar";
 import Button from 'react-bootstrap/Button';
-
-import { db } from '../../services/firebaseConnection';
-
 import { FiTrash } from 'react-icons/fi';
 
+import { db, auth } from '../../services/firebaseConnection';
 import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { deleteUser } from 'firebase/auth';
 
-import { useState, useEffect } from "react";
+import { AuthContext } from '../../contexts/auth';
 
 import { toast } from 'react-toastify';
+
 
 const docRef = collection(db, 'usuarios');
 
 export function Usuarios() {
+
+    const { logout } = useContext(AuthContext);
 
     useEffect(() => {
 
@@ -37,15 +40,24 @@ export function Usuarios() {
         loadUsuarios();
 
         return () => { }
+
     }, [])
 
     const [usuarios, setUsuarios] = useState([]);
 
     async function handleDeleteUser(id) {
+
         const docRef = doc(db, "usuarios", id);
         await deleteDoc(docRef)
             .then(() => {
-                toast.success('Usuário deletado com sucesso!');
+                const user = auth.currentUser;
+                user.delete()
+                    .then(() => {
+                        const removeUsuario = usuarios.filter(item => item.id !== id);
+                        setUsuarios(removeUsuario);
+                        logout();
+                        toast.success('Usuário deletado com sucesso!');
+                    })
             })
 
     }
@@ -101,7 +113,6 @@ export function Usuarios() {
                     </div>
                 </div>
             </main>
-
 
         </>
     )

@@ -51,6 +51,8 @@ export function Higiene() {
         const docRef = doc(db, 'higienes', id);
         await deleteDoc(docRef)
             .then(() => {
+                const removeItem = higiene.filter(item => item.id !== id);
+                setHigiene(removeItem);
                 toast.success('Higiene deletada com sucesso!');
             })
     }

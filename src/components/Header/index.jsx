@@ -7,7 +7,7 @@ function Header() {
 
     return (
         <div className='sidebar' >
-            <div style={{marginTop: '30px'}}> 
+            <div style={{ marginTop: '30px' }}>
                 <img
                     src='../../src/assets/icon_parceiros.svg'
                     alt="Logo"
@@ -20,15 +20,16 @@ function Header() {
                 Dashboard
             </Link>
 
-            <Link to='/cadastro' >
+            <Link to='/morador' >
                 Parceiros
             </Link>
-
+            {/* 
             <Link >
                 Perfil
-            </Link>
+            </Link> */}
+            ;
         </div>
     )
 }
 
-export default Header
+export default Header;

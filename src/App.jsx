@@ -6,14 +6,17 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { BrowserRouter } from 'react-router-dom';
+import AuthProvider from './contexts/auth';
 
 function App() {
 
   return (
     <>
       <BrowserRouter>
-        <RoutesApp />
-        <ToastContainer autoClose={3000} theme='dark' />
+        <AuthProvider>
+          <ToastContainer autoClose={3000} theme='dark' />
+          <RoutesApp />
+        </AuthProvider>
       </BrowserRouter>
     </>
   )
